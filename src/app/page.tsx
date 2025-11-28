@@ -1,27 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/store/useUserStore';
 import TestLoginModal from '@/components/auth/TestLoginModal';
-import TestRegisterModal from '@/components/auth/TestRegisterModal';
 
-export default function LoginPage() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+export default function Home() {
+  const { user, isLoading } = useUserStore();
   const router = useRouter();
 
-  return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      {/* 타이틀 */}
-      <h1 className="text-4xl font-bold mb-12 text-gray-800">Guild Manager</h1>
+  // 로그인 모달 표시 여부 제어
+  const [showLogin, setShowLogin] = useState(false);
 
-      <div className="w-full max-w-xs flex flex-col gap-4">
-        {/* 구글 로그인 버튼 (디자인만) */}
-        <button
-          className="flex items-center justify-center gap-3 w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-          onClick={() => alert('준비 중입니다.')}
+  useEffect(() => {
+    // 1. 로딩이 끝났는데 유저 정보가 있다면 -> 길드 페이지로 강제 이동
+    if (!isLoading && user) {
+      router.replace('/guild');
+    }
+  }, [user, isLoading, router]);
+
+  // 2. 로딩 중이면 스피너 표시 (깜빡임 방지)
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="text-lg font-semibold text-gray-500">인증 정보 확인 중...</div>
+      </div>
+    );
+  }
+
+  // 3. 이미 로그인 된 상태라면 리다이렉트 중이므로 빈 화면
+  if (user) {
+    return null;
+  }
+
+  // 4. 비로그인 상태 -> 로그인/회원가입 랜딩 페이지 보여주기
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-50">
+      <div className="text-center mb-12 max-w-md">
+        <h1 className="text-5xl font-extrabold mb-6 text-blue-600 tracking-tight">Sena GM</h1>
+        <p className="text-gray-600 text-lg break-keep">
+          세븐나이츠 길드 관리자를 위한 통합 솔루션.<br />
+          지금 바로 시작해보세요.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4 w-full max-w-xs">
+        {/* 구글 로그인 버튼 */}
+        <a
+          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/auth/google`}
+          className="flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 font-bold transition shadow-sm"
         >
-          {/* 구글 아이콘 (SVG) */}
+          {/* 구글 아이콘 SVG */}
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -32,7 +61,7 @@ export default function LoginPage() {
               fill="#34A853"
             />
             <path
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.21-1.19-.63z"
               fill="#FBBC05"
             />
             <path
@@ -40,41 +69,25 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          Google 계정으로 로그인
-        </button>
-
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-gray-50 px-2 text-gray-500">Test Options</span>
-          </div>
-        </div>
+          Google로 계속하기
+        </a>
 
         {/* 테스트 로그인 버튼 */}
         <button
-          onClick={() => setIsLoginModalOpen(true)}
-          className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+          onClick={() => setShowLogin(true)}
+          className="px-6 py-3.5 bg-gray-800 text-white rounded-xl hover:bg-gray-900 font-bold transition shadow-lg"
         >
-          테스트 로그인
-        </button>
-
-        {/* 테스트 회원가입 버튼 */}
-        <button
-          onClick={() => setIsRegisterModalOpen(true)}
-          className="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          테스트 회원가입
+          테스트 계정으로 로그인
         </button>
       </div>
 
-      {/* 모달 컴포넌트들 */}
-      {isLoginModalOpen && (
-        <TestLoginModal onClose={() => setIsLoginModalOpen(false)} />
-      )}
-      {isRegisterModalOpen && (
-        <TestRegisterModal onClose={() => setIsRegisterModalOpen(false)} />
+      <div className="mt-8 text-xs text-gray-400">
+        © 2024 SenaGM. All rights reserved.
+      </div>
+
+      {/* 테스트 로그인 모달 */}
+      {showLogin && (
+        <TestLoginModal onClose={() => setShowLogin(false)} />
       )}
     </main>
   );
