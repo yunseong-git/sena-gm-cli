@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/useUserStore';
 import TestLoginModal from '@/components/auth/TestLoginModal';
+import TestRegisterModal from '@/components/auth/TestRegisterModal';
 
 export default function Home() {
   const { user, isLoading } = useUserStore();
@@ -11,6 +12,7 @@ export default function Home() {
 
   // 로그인 모달 표시 여부 제어
   const [showLogin, setShowLogin] = useState(false);
+   const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
     // 1. 로딩이 끝났는데 유저 정보가 있다면 -> 길드 페이지로 강제 이동
@@ -79,6 +81,14 @@ export default function Home() {
         >
           테스트 계정으로 로그인
         </button>
+
+        {/* [추가됨] 테스트 회원가입 버튼 */}
+        <button
+          onClick={() => setShowRegister(true)}
+          className="px-6 py-3.5 bg-green-600 text-white rounded-xl hover:bg-green-700 font-bold transition shadow-lg"
+        >
+          테스트 회원가입
+        </button>
       </div>
 
       <div className="mt-8 text-xs text-gray-400">
@@ -88,6 +98,11 @@ export default function Home() {
       {/* 테스트 로그인 모달 */}
       {showLogin && (
         <TestLoginModal onClose={() => setShowLogin(false)} />
+      )}
+
+      {/* [추가됨] 테스트 회원가입 모달 */}
+      {showRegister && (
+        <TestRegisterModal onClose={() => setShowRegister(false)} />
       )}
     </main>
   );
