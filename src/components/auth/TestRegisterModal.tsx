@@ -1,22 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/apiClient';
-import { useUserStore } from '@/store/useUserStore';
+// import { useRouter } from 'next/navigation';
+// import { apiClient } from '@/lib/apiClient';
+// import { useUserStore } from '@/store/useUserStore';
 
 interface Props {
   onClose: () => void;
 }
 
 export default function TestRegisterModal({ onClose }: Props) {
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const { setUser } = useUserStore();
-  const router = useRouter();
+  // const [nickname, setNickname] = useState('');
+  // const [password, setPassword] = useState('');
+  // const { setUser } = useUserStore();
+  // const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // [수정] 배포를 위한 임시 비활성화 처리
+    alert('현재 회원가입 기능은 준비 중입니다.\n관리자에게 문의해주세요.');
+    onClose();
+
+    /* // 기존 회원가입 로직 (주석 처리)
     try {
       const res = await apiClient('/auth/test/register', {
         method: 'POST',
@@ -26,18 +32,34 @@ export default function TestRegisterModal({ onClose }: Props) {
       if (res.payload) {
         setUser(res.payload);
         alert('회원가입 완료! 환영합니다.');
-        router.push('/guild'); // 가입 성공 시 길드 페이지로 이동
+        router.push('/guild'); 
       }
     } catch (error: any) {
       alert(error.message || '회원가입 실패');
     }
+    */
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-sm rounded-lg p-6 shadow-xl">
+      <div className="bg-white w-full max-w-sm rounded-lg p-6 shadow-xl text-center">
         <h2 className="text-xl font-bold mb-4">테스트 회원가입</h2>
 
+        {/* 안내 문구 추가 */}
+        <div className="py-8 text-gray-500">
+          <p className="mb-2 text-3xl">🚧</p>
+          <p>회원가입 기능은 현재 <br /><strong>준비 중</strong>입니다.</p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-bold transition"
+        >
+          닫기
+        </button>
+
+        {/* // 기존 폼 (주석 처리)
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">닉네임 (2~10자)</label>
@@ -79,6 +101,7 @@ export default function TestRegisterModal({ onClose }: Props) {
             </button>
           </div>
         </form>
+        */}
       </div>
     </div>
   );

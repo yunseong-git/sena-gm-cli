@@ -1,5 +1,5 @@
 // 백엔드 API의 기본 URL (환경 변수로 관리하는 것이 좋습니다)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Next.js 14의 fetch를 활용한 기본 페처
 export const apiFetch = async (

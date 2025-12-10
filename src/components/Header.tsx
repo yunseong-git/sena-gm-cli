@@ -39,13 +39,13 @@ export default function Header() {
 
       <div className="flex gap-3 items-center">
         <span className="text-sm mr-2">
-          <span className="font-bold">환영합니다</span>
+          환영합니다!
         </span>
 
-        {/* 내 정보 변경 (UI만 존재) */}
+        {/* 내 정보 변경 버튼 연결 */}
         <button
           className="px-3 py-1.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-          onClick={() => alert('아직 준비중인 기능입니다!')}
+          onClick={() => router.push('/user/profile')}
         >
           내 정보
         </button>

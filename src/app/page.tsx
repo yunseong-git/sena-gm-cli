@@ -12,7 +12,7 @@ export default function Home() {
 
   // 로그인 모달 표시 여부 제어
   const [showLogin, setShowLogin] = useState(false);
-   const [showRegister, setShowRegister] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
     // 1. 로딩이 끝났는데 유저 정보가 있다면 -> 길드 페이지로 강제 이동
@@ -49,7 +49,7 @@ export default function Home() {
       <div className="flex flex-col gap-4 w-full max-w-xs">
         {/* 구글 로그인 버튼 */}
         <a
-          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/auth/google`}
+          href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
           className="flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 font-bold transition shadow-sm"
         >
           {/* 구글 아이콘 SVG */}

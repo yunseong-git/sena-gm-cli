@@ -6,33 +6,32 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/useUserStore';
 import { apiClient } from '@/lib/apiClient';
 import GuildMemberListModal from '@/components/guild/GuildMemberListModal';
-import GuildManageModal from '@/components/guild/GuildManageModal'; // [New]
+import GuildManageModal from '@/components/guild/GuildManageModal';
 
-// 길드 정보 타입 확장 (tag 추가)
+// 길드 정보 타입
 interface GuildInfo {
-  fullName: string;
+  name: string; // [New] 이름 분리 표시를 위해 추가
   notice: string;
-  tag: string; // [New] 태그 수정에 필요
+  tag: string;
 }
 
 export default function GuildPage() {
   const { user, isLoading } = useUserStore();
   const router = useRouter();
-  
+
   const [guildInfo, setGuildInfo] = useState<GuildInfo | null>(null);
   const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
-  const [isManageModalOpen, setIsManageModalOpen] = useState(false); // [New] 관리 모달 상태
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 
-  // 길드 정보 가져오기 함수 (재사용을 위해 분리)
+  // 길드 정보 가져오기
   const fetchGuildInfo = useCallback(async () => {
     if (user?.guildId) {
-        try {
-            const data = await apiClient('/guild');
-            // 백엔드 응답에서 payload를 꺼내거나 data 자체를 사용
-            setGuildInfo(data.payload || data);
-        } catch (err) {
-            console.error('길드 정보 로드 실패:', err);
-        }
+      try {
+        const data = await apiClient('/guild');
+        setGuildInfo(data.payload || data);
+      } catch (err) {
+        console.error('길드 정보 로드 실패:', err);
+      }
     }
   }, [user?.guildId]);
 
@@ -69,20 +68,28 @@ export default function GuildPage() {
   return (
     <main className="p-6 max-w-2xl mx-auto min-h-screen">
       <div className="bg-white shadow-xl rounded-3xl p-8 border border-gray-100">
-        
+
         {/* 헤더 섹션 */}
         <div className="mb-8 text-center pb-6 border-b border-gray-100">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight">
-            {guildInfo?.fullName || '길드 정보를 불러오는 중...'}
+          {/* [수정됨] 이름과 태그 분리 표시: items-baseline으로 정렬 변경, gap-2로 간격 조정 */}
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight flex items-baseline justify-center gap-2">
+            {guildInfo ? (
+              <>
+                <span>{guildInfo.name}</span>
+                <span className="text-xl text-gray-400 font-medium">#{guildInfo.tag}</span>
+              </>
+            ) : (
+              '길드 정보를 불러오는 중...'
+            )}
           </h1>
+
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-50 border border-gray-200">
             <span className="text-sm text-gray-500">내 직책</span>
-            <span className={`text-sm font-bold ${
-                userRole === 'MASTER' ? 'text-red-600' :
-                userRole === 'SUBMASTER' ? 'text-orange-600' :
+            <span className={`text-sm font-bold ${userRole === 'MASTER' ? 'text-red-600' :
+              userRole === 'SUBMASTER' ? 'text-orange-600' :
                 userRole === 'MANAGER' ? 'text-blue-600' : 'text-gray-600'
-            }`}>
-                {user.guildRole}
+              }`}>
+              {user.guildRole}
             </span>
           </div>
         </div>
@@ -90,10 +97,10 @@ export default function GuildPage() {
         {/* 공지사항 카드 */}
         <div className="bg-blue-50 p-6 rounded-2xl mb-8 relative overflow-hidden min-h-[120px]">
           <div className="absolute top-0 right-0 p-4 opacity-10">
-            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z"/></svg>
+            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z" /></svg>
           </div>
           <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
-            📢 오늘의 공지
+            📢 공지사항
           </h3>
           <p className="text-blue-800 text-sm whitespace-pre-wrap leading-relaxed relative z-10">
             {guildInfo?.notice || '등록된 공지사항이 없습니다.\n관리자는 길드 관리 메뉴에서 공지를 등록해보세요!'}
@@ -103,7 +110,7 @@ export default function GuildPage() {
         {/* 메뉴 그리드 */}
         <div className="grid grid-cols-2 gap-4">
           {/* 1. 길드원 목록 버튼 */}
-          <button 
+          <button
             onClick={() => setIsMemberModalOpen(true)}
             className="flex flex-col items-center justify-center p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-blue-200 hover:bg-blue-50 transition group"
           >
@@ -115,7 +122,7 @@ export default function GuildPage() {
 
           {/* 2. 길드 관리 버튼 (관리자 전용) */}
           {isAdmin ? (
-            <button 
+            <button
               onClick={() => setIsManageModalOpen(true)}
               className="flex flex-col items-center justify-center p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-purple-200 hover:bg-purple-50 transition group"
             >
@@ -126,7 +133,7 @@ export default function GuildPage() {
             </button>
           ) : (
             <div className="flex flex-col items-center justify-center p-5 border border-gray-100 rounded-2xl bg-gray-50 opacity-50 cursor-not-allowed">
-               <div className="w-12 h-12 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-2xl mb-3">
+              <div className="w-12 h-12 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-2xl mb-3">
                 🔒
               </div>
               <span className="font-bold text-gray-400">관리 메뉴</span>
@@ -136,20 +143,20 @@ export default function GuildPage() {
       </div>
 
       {/* 모달 컴포넌트들 */}
-      <GuildMemberListModal 
-        isOpen={isMemberModalOpen} 
-        onClose={() => setIsMemberModalOpen(false)} 
+      <GuildMemberListModal
+        isOpen={isMemberModalOpen}
+        onClose={() => setIsMemberModalOpen(false)}
       />
-      
+
       {/* 길드 관리 모달 추가 */}
       {guildInfo && (
-          <GuildManageModal 
-            isOpen={isManageModalOpen}
-            onClose={() => setIsManageModalOpen(false)}
-            initialNotice={guildInfo.notice || ''}
-            initialTag={guildInfo.tag || ''}
-            onUpdate={fetchGuildInfo} // 수정 완료 시 정보 새로고침
-          />
+        <GuildManageModal
+          isOpen={isManageModalOpen}
+          onClose={() => setIsManageModalOpen(false)}
+          initialNotice={guildInfo.notice || ''}
+          initialTag={guildInfo.tag || ''}
+          onUpdate={fetchGuildInfo} // 수정 완료 시 정보 새로고침
+        />
       )}
     </main>
   );
