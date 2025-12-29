@@ -1,5 +1,3 @@
-// lib/apiClient.ts
-
 // 백엔드 API의 기본 URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
