@@ -21,6 +21,15 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
     }
   };
 
+  // 날짜 포맷팅 헬퍼 (안전하게 처리)
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString();
+    } catch {
+      return '-';
+    }
+  };
+
   return (
     <div className="animate-slide-up space-y-8">
       {!results || results.length === 0 ? (
@@ -42,9 +51,16 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
                   {defense.isDefault && <span className="bg-gray-200 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-300">기본 덱</span>}
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* [수정] 방어덱 영웅 렌더링 안전장치 추가 */}
                   {defense.deck.heroes.map((hid) => (
                     <div key={hid} className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gray-200 relative">
-                      {heroes[hid] ? <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white font-bold text-xs">{heroes[hid].name.slice(0, 1)}</div> : <div className="w-full h-full bg-gray-300" />}
+                      {heroes[hid] ? (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white font-bold text-xs">
+                          {heroes[hid].name.slice(0, 1)}
+                        </div>
+                      ) : (
+                        <div className="w-full h-full bg-gray-300 flex items-center justify-center text-[10px] text-gray-500">?</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -64,13 +80,14 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${getScoreColor(attack.score)}`}>{attack.score}</span>
                           <span className="text-xs font-bold text-gray-700">{attack.authorName}</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">{new Date(attack.createdAt).toLocaleDateString()}</span>
+                        <span className="text-[10px] text-gray-400">{formatDate(attack.createdAt)}</span>
                       </div>
                       <div className="flex items-center gap-2 mb-3 bg-gray-50 p-2 rounded-lg w-fit">
                         <span className="text-[10px] font-bold text-gray-400 mr-1">ATTACK</span>
+                        {/* [수정] 공격덱 영웅 렌더링 안전장치 추가 */}
                         {attack.deck.heroes.map((hid) => (
                           <div key={hid} className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-700 shadow-sm">
-                            {heroes[hid]?.name.slice(0, 1)}
+                            {heroes[hid] ? heroes[hid].name.slice(0, 1) : '?'}
                           </div>
                         ))}
                       </div>
