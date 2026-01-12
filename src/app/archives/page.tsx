@@ -83,7 +83,7 @@ export default function GuildArchivePage() {
 
         {/* 헤더 & 뒤로가기 버튼 */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">🏰 길드 아카이브</h1>
+          <h1 className="text-2xl font-bold text-gray-900">길드 아카이브</h1>
           {viewMode === 'RESULT' && (
             <button
               onClick={() => setViewMode('SEARCH')}
@@ -107,6 +107,7 @@ export default function GuildArchivePage() {
         ) : (
           <ArchiveResultSection
             results={results}
+            selectedHeroes={selectedHeroes}
             onRegisterDefense={() => setIsDefenseModalOpen(true)}
             onRegisterAttack={(defenseId) => {
               setTargetDefenseId(defenseId);

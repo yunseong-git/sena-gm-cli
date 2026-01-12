@@ -1,15 +1,17 @@
 'use client';
 
-import { useHeroStore } from '@/store/useHeroStore';
+import { useHeroStore, HERO_SKILL_ENUM } from '@/store/useHeroStore';
 import { ArchiveSearchResponseDto, ATTACK_SCORE_ENUM } from '@/types/archive.type';
+import HeroCard from '@/components/hero/HeroCard';
 
 interface Props {
   results: ArchiveSearchResponseDto[] | null;
+  selectedHeroes: string[]; // [New] 검색 조건 표시용
   onRegisterDefense: () => void;
   onRegisterAttack: (defenseId: string) => void;
 }
 
-export default function ArchiveResultSection({ results, onRegisterDefense, onRegisterAttack }: Props) {
+export default function ArchiveResultSection({ results, selectedHeroes, onRegisterDefense, onRegisterAttack }: Props) {
   const { heroes } = useHeroStore();
 
   const getScoreColor = (score: ATTACK_SCORE_ENUM) => {
@@ -21,7 +23,6 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
     }
   };
 
-  // 날짜 포맷팅 헬퍼 (안전하게 처리)
   const formatDate = (dateStr: string) => {
     try {
       return new Date(dateStr).toLocaleDateString();
@@ -30,8 +31,29 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
     }
   };
 
+  // 스킬 타입 텍스트 변환
+  const getSkillLabel = (type: string) => {
+    return type === HERO_SKILL_ENUM.SKILL_1 ? '1스' : '2스';
+  };
+
   return (
     <div className="animate-slide-up space-y-8">
+
+      {/* 1. 검색 조건 표시 (어떤 방어덱을 검색했는지) */}
+      {selectedHeroes.length === 3 && (
+        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col items-center">
+          <h3 className="text-sm font-bold text-gray-500 mb-4">현재 검색된 방어덱 조합</h3>
+          <div className="flex gap-4">
+            {selectedHeroes.map((hid) => (
+              <div key={hid} className="scale-90 origin-top">
+                <HeroCard heroId={hid} mode="SIMPLE" className="pointer-events-none" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 2. 결과 리스트 */}
       {!results || results.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl shadow-sm border border-gray-200 text-center">
           <div className="text-5xl mb-4">🤷‍♂️</div>
@@ -44,14 +66,16 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
       ) : (
         results.map((defense) => (
           <div key={defense.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+
+            {/* 방어덱 헤더 */}
             <div className="bg-gray-50 p-4 border-b border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex flex-col items-start gap-1">
                   <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200">DEFENSE</span>
                   {defense.isDefault && <span className="bg-gray-200 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-300">기본 덱</span>}
                 </div>
+                {/* 영웅 아이콘 */}
                 <div className="flex items-center gap-2">
-                  {/* [수정] deck이나 heroes가 없을 경우를 대비해 Optional Chaining (?.) 추가 */}
                   {defense.deck?.heroes?.map((hid) => (
                     <div key={hid} className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gray-200 relative">
                       {heroes[hid] ? (
@@ -70,11 +94,14 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
               </button>
             </div>
 
+            {/* 공략(공격덱) 리스트 */}
             <div className="p-4 bg-gray-50/50">
               {defense.attacks && defense.attacks.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {defense.attacks.map((attack) => (
                     <div key={attack.id} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition duration-200 hover:border-blue-200 group">
+
+                      {/* 상단 정보 */}
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${getScoreColor(attack.score)}`}>{attack.score}</span>
@@ -82,16 +109,41 @@ export default function ArchiveResultSection({ results, onRegisterDefense, onReg
                         </div>
                         <span className="text-[10px] text-gray-400">{formatDate(attack.createdAt)}</span>
                       </div>
+
+                      {/* 공격덱 영웅 구성 */}
                       <div className="flex items-center gap-2 mb-3 bg-gray-50 p-2 rounded-lg w-fit">
                         <span className="text-[10px] font-bold text-gray-400 mr-1">ATTACK</span>
-                        {/* [수정] deck이나 heroes가 없을 경우를 대비해 Optional Chaining (?.) 추가 */}
                         {attack.deck?.heroes?.map((hid) => (
                           <div key={hid} className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-700 shadow-sm">
                             {heroes[hid] ? heroes[hid].name.slice(0, 1) : '?'}
                           </div>
                         ))}
                       </div>
-                      <p className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all">{attack.description || '설명이 없습니다.'}</p>
+
+                      {/* [New] 스킬 예약 정보 표시 */}
+                      {attack.deck?.skillReservation && attack.deck.skillReservation.length > 0 && (
+                        <div className="mb-3">
+                          <span className="text-[10px] font-bold text-gray-400 block mb-1">SKILL ORDER</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {attack.deck.skillReservation.map((skill, idx) => {
+                              // heroIndex를 이용해 해당 영웅 ID 찾기
+                              const targetHeroId = attack.deck.heroes[skill.heroIndex];
+                              const targetHeroName = heroes[targetHeroId]?.name || '?';
+
+                              return (
+                                <div key={idx} className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  <span className="bg-white px-1 rounded text-[9px] text-yellow-600 border border-yellow-100">{idx + 1}</span>
+                                  <span>{targetHeroName} {getSkillLabel(skill.skillType)}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all border-t border-gray-100 pt-2 mt-2">
+                        {attack.description || '설명이 없습니다.'}
+                      </p>
                     </div>
                   ))}
                 </div>

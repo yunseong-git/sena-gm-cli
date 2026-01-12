@@ -48,7 +48,7 @@ export default function RegisterPage() {
       if (res.payload) {
         setUser(res.payload);
         alert(`환영합니다, ${nickname}님!`);
-        router.push('/guild'); // 길드 페이지(또는 메인)로 이동
+        router.push('/guilds'); // 길드 페이지(또는 메인)로 이동
       }
     } catch (err: any) {
       // 401 Unauthorized (토큰 만료 등) or 400 Bad Request
@@ -109,8 +109,8 @@ export default function RegisterPage() {
             type="submit"
             disabled={loading}
             className={`w-full py-4 rounded-xl font-bold text-lg transition shadow-md ${loading
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 transform'
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 transform'
               }`}
           >
             {loading ? '가입 처리 중...' : 'SenaGM 시작하기'}
