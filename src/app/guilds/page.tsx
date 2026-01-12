@@ -55,10 +55,10 @@ export default function GuildPage() {
         <h1 className="text-2xl font-bold text-gray-800">아직 소속된 길드가 없습니다.</h1>
         <p className="text-gray-500 -mt-4">길드에 가입하거나 새로운 길드를 만들어보세요!</p>
         <div className="flex gap-4 mt-4">
-          <Link href="/guild/create" className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
+          <Link href="/guilds/create" className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
             🏰 길드 창설
           </Link>
-          <Link href="/guild/join" className="px-8 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 shadow-md transition transform hover:-translate-y-1">
+          <Link href="/guilds/join" className="px-8 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 shadow-md transition transform hover:-translate-y-1">
             👋 길드 가입
           </Link>
         </div>

@@ -33,7 +33,7 @@ export default function Header() {
 
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-sm border-b sticky top-0 z-50">
-      <div className="font-bold text-xl text-blue-600 cursor-pointer" onClick={() => router.push('/guild')}>
+      <div className="font-bold text-xl text-blue-600 cursor-pointer" onClick={() => router.push('/guilds')}>
         SenaGM <span className="text-xs text-gray-500 font-normal text-black">Manager</span>
       </div>
 
