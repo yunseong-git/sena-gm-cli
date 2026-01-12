@@ -43,7 +43,7 @@ export default function GuildArchiveModal({ isOpen, onClose, userRole }: Props) 
   // 덱 검색 페이지로 이동
   const handleGoToSearch = () => {
     onClose();
-    router.push('/guild-archive');
+    router.push('/archives');
   };
 
   if (!isOpen) return null;

@@ -1,15 +1,23 @@
 // 백엔드 DTO 구조와 일치시킴
 
+import { HERO_SKILL_ENUM } from "@/store/useHeroStore";
+
 export enum ATTACK_SCORE_ENUM {
   NICE = 'nice',
   GOOD = 'good',
   TRY = 'try',
 }
 
+// [New] 스킬 예약 객체 타입
+export interface SkillReservationDto {
+  heroIndex: number;
+  skillType: HERO_SKILL_ENUM;
+}
+
 export interface DeckDto {
   compositionKey: string;
   heroes: [string, string, string]; // 영웅 ID 3개
-  // skillReservation 등은 필요 시 추가
+  skillReservation: SkillReservationDto[]; // [New] 스킬 예약 필드 추가
 }
 
 export interface ArchiveAttackResponseDto {

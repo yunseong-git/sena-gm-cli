@@ -57,7 +57,7 @@ function JoinContent() {
       if (res.payload) {
         setUser(res.payload);
         alert(`가입을 환영합니다!`);
-        router.push('/guild'); // 길드 페이지로 이동
+        router.push('/guilds'); // 길드 페이지로 이동
       }
     } catch (error: any) {
       // 409 Conflict (이미 가입됨 등)
@@ -94,8 +94,8 @@ function JoinContent() {
             type="submit"
             disabled={loading || code.length !== 9}
             className={`w-full py-4 rounded-xl font-bold text-lg transition shadow-md ${loading || code.length !== 9
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             {loading ? '가입 처리 중...' : '가입하기'}

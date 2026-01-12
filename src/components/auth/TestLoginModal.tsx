@@ -25,7 +25,7 @@ export default function TestLoginModal({ onClose }: Props) {
 
       if (res.payload) {
         setUser(res.payload);
-        router.push('/guild'); // 로그인 성공 시 길드 페이지로 이동
+        router.push('/guilds'); // 로그인 성공 시 길드 페이지로 이동
       }
     } catch (error: any) {
       alert(error.message || '로그인 실패');
