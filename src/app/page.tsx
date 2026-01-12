@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     // 1. 로딩이 끝났는데 유저 정보가 있다면 -> 길드 페이지로 강제 이동
     if (!isLoading && user) {
-      router.replace('/guild');
+      router.replace('/guilds');
     }
   }, [user, isLoading, router]);
 

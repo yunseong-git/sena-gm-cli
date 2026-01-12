@@ -34,7 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 3. SWR의 결과(data, error)가 변경될 때마다 Zustand 스토어 업데이트
   useEffect(() => {
     if (user) {
-      console.log('AuthProvider Loaded User:', user); // 디버깅용 로그
       setUser(user); // SWR 성공 -> Zustand에 유저 저장
     }
     if (error) {

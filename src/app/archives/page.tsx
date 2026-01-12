@@ -64,13 +64,38 @@ export default function GuildArchivePage() {
     setResults(null);
 
     try {
+      console.log('🚀 [Debug] 검색 요청 시작:', selectedHeroes);
+
       const data = await apiClient('/archive/search', {
         method: 'POST',
         body: JSON.stringify({ heroIds: selectedHeroes }),
       });
-      setResults(Array.isArray(data) ? data : data.payload || []);
-      setViewMode('RESULT');
+
+      console.log('📩 [Debug] 서버 응답 원본:', data);
+
+      // 응답 데이터가 배열인지 확인
+      const searchResults = Array.isArray(data) ? data : data.payload;
+
+      if (!Array.isArray(searchResults)) {
+        console.error('❌ [Debug] 응답 형식이 배열이 아님:', data);
+        setResults([]);
+        alert('서버 응답 형식이 올바르지 않습니다.');
+      } else {
+        // 상세 데이터 검사
+        searchResults.forEach((res: any, idx: number) => {
+          console.log(`🔍 [Debug] 결과 #${idx + 1} 방어덱 ID: ${res.id}`);
+          console.log(`   - attacks 배열 길이: ${res.attacks ? res.attacks.length : '없음(undefined)'}`);
+          if (res.attacks && res.attacks.length > 0) {
+            console.log('   - 첫 번째 공격덱 데이터:', res.attacks[0]);
+          }
+        });
+
+        setResults(searchResults);
+        setViewMode('RESULT');
+      }
+
     } catch (error: any) {
+      console.error('❌ [Debug] 검색 에러 발생:', error);
       alert(error.message || '검색 중 오류가 발생했습니다.');
     } finally {
       setIsSearching(false);

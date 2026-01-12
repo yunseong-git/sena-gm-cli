@@ -123,7 +123,7 @@ export default function GuildManageModal({ isOpen, onClose, initialNotice, initi
   // 6. 링크 복사
   const handleCopyInviteLink = () => {
     if (!inviteCode) return;
-    const url = `${window.location.origin}/guild/join?code=${inviteCode}`;
+    const url = `${window.location.origin}/guilds/join?code=${inviteCode}`;
 
     navigator.clipboard.writeText(url).then(() => {
       setIsCopied(true);
@@ -217,7 +217,7 @@ export default function GuildManageModal({ isOpen, onClose, initialNotice, initi
                     onClick={handleCheckTag}
                     disabled={tag === initialTag}
                     className={`px-3 py-2 rounded-lg text-sm font-bold whitespace-nowrap ${tag === initialTag ? 'bg-gray-100 text-gray-400' :
-                        isTagChecked && isTagAvailable ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'
+                      isTagChecked && isTagAvailable ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'
                       }`}
                   >
                     {tag === initialTag ? '사용중' : isTagChecked && isTagAvailable ? '확인완료' : '중복확인'}

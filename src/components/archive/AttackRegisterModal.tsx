@@ -137,7 +137,7 @@ export default function AttackRegisterModal({ isOpen, onClose, defenseId }: Prop
               <label className="block text-sm font-bold text-gray-700 mb-3">추가 팁 / 설명</label>
               <textarea
                 className="w-full h-[100px] p-3 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                placeholder="예: 펫 제이브, 전열 루디 필수..."
+                placeholder="ex: 펫 추천, 전반 추천, 추천 이유"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />

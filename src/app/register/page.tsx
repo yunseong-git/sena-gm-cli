@@ -16,7 +16,7 @@ export default function RegisterPage() {
   // [New] 이미 로그인 된 유저가 접근하면 길드 페이지로 이동
   useEffect(() => {
     if (user) {
-      router.replace('/guild');
+      router.replace('/guilds');
     }
   }, [user, router]);
 

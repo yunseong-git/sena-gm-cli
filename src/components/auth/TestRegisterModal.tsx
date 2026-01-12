@@ -17,27 +17,8 @@ export default function TestRegisterModal({ onClose }: Props) {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // [수정] 배포를 위한 임시 비활성화 처리
     alert('현재 회원가입 기능은 준비 중입니다.\n관리자에게 문의해주세요.');
     onClose();
-
-    /* // 기존 회원가입 로직 (주석 처리)
-    try {
-      const res = await apiClient('/auth/test/register', {
-        method: 'POST',
-        body: JSON.stringify({ nickname, password }),
-      });
-
-      if (res.payload) {
-        setUser(res.payload);
-        alert('회원가입 완료! 환영합니다.');
-        router.push('/guild'); 
-      }
-    } catch (error: any) {
-      alert(error.message || '회원가입 실패');
-    }
-    */
   };
 
   return (
