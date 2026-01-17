@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
 import { useHeroStore } from '@/store/useHeroStore';
-import { DeckDto } from '@/types/archive.type'; // 타입 재사용
+// [수정] DeckDto -> DefenseDeckResponseDto 로 변경 (혹은 DeckCoreDto 사용)
+import { DefenseDeckResponseDto } from '@/types/archive.type';
 
 interface Props {
   isOpen: boolean;
@@ -17,10 +18,19 @@ export default function GuildArchiveModal({ isOpen, onClose, userRole }: Props) 
   const { heroes } = useHeroStore();
 
   const [view, setView] = useState<'MENU' | 'PICK'>('MENU');
-  const [pickedDecks, setPickedDecks] = useState<DeckDto[]>([]);
+  // [수정] 타입 변경 적용
+  const [pickedDecks, setPickedDecks] = useState<DefenseDeckResponseDto[]>([]);
   const [loading, setLoading] = useState(false);
 
   const isAdmin = ['MASTER', 'SUBMASTER'].includes(userRole?.toUpperCase() || '');
+
+  // 모달이 열릴 때마다 뷰를 초기화
+  useEffect(() => {
+    if (isOpen) {
+      setView('MENU');
+      setPickedDecks([]);
+    }
+  }, [isOpen]);
 
   // 추천 방어덱 조회 핸들러
   const handleFetchPicks = async () => {
@@ -43,6 +53,7 @@ export default function GuildArchiveModal({ isOpen, onClose, userRole }: Props) 
   // 덱 검색 페이지로 이동
   const handleGoToSearch = () => {
     onClose();
+    // 라우팅 경로 변경 (guild-archive -> archives)
     router.push('/archives');
   };
 
@@ -109,12 +120,13 @@ export default function GuildArchiveModal({ isOpen, onClose, userRole }: Props) 
                     </div>
                     {/* 영웅 리스트 */}
                     <div className="flex items-center gap-3 justify-center bg-gray-50 p-3 rounded-lg">
+                      {/* [수정] deck.heroes (평탄화된 구조 반영) */}
                       {deck.heroes.map((hid) => (
                         <div key={hid} className="flex flex-col items-center gap-1">
                           <div className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center overflow-hidden shadow-sm">
-                            <span className="font-bold text-gray-700">{heroes[hid]?.name.slice(0, 1)}</span>
+                            <span className="font-bold text-gray-700">{heroes[hid] ? heroes[hid].name.slice(0, 1) : '?'}</span>
                           </div>
-                          <span className="text-[10px] text-gray-600 font-bold">{heroes[hid]?.name}</span>
+                          <span className="text-[10px] text-gray-600 font-bold">{heroes[hid] ? heroes[hid].name : 'Unknown'}</span>
                         </div>
                       ))}
                     </div>
