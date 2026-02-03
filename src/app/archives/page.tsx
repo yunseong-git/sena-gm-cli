@@ -65,8 +65,6 @@ export default function GuildArchivePage() {
     setResults(null);
 
     try {
-      console.log('🚀 [Debug] 검색 요청 시작:', selectedHeroes);
-
       // POST /archive/search
       // DTO 필드명: heroIds (백엔드 수정사항 반영)
       const data = await apiClient('/archive/search', {
@@ -74,15 +72,12 @@ export default function GuildArchivePage() {
         body: JSON.stringify({ heroIds: selectedHeroes }),
       });
 
-      console.log('📩 [Debug] 서버 응답:', data);
-
       // [수정] 응답 구조에 따라 데이터 추출 (Wrapper DTO 대응)
       // 백엔드가 ArchiveSearchResDto { results: [] } 를 반환한다고 가정
       // 만약 배열로 온다면 data 자체를 사용
       const searchResults = data?.results || (Array.isArray(data) ? data : []);
 
       if (!Array.isArray(searchResults)) {
-        console.error('❌ [Debug] 결과 배열을 찾을 수 없음:', data);
         setResults([]);
         // alert('서버 응답 형식이 올바르지 않습니다.');
       } else {

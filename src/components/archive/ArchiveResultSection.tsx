@@ -27,6 +27,19 @@ export default function ArchiveResultSection({ results, selectedHeroes, onRegist
               </div>
             ))}
           </div>
+
+          {/* [New] 결과가 있을 때도 방어덱을 추가할 수 있도록 버튼 노출 */}
+          {results && results.length > 0 && (
+            <button
+              onClick={onRegisterDefense}
+              className="mt-6 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm hover:bg-blue-100 border border-blue-100 transition flex items-center gap-2 shadow-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              </svg>
+              이 조합으로 새 방어덱 등록하기
+            </button>
+          )}
         </div>
       )}
 
